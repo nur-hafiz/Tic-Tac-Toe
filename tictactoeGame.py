@@ -62,17 +62,19 @@ class Game(object):
             else: #Check for win and clear the board if yes, else check for draw.                                                                
                 playBoard.aRow[self.rowSelect][self.colSelect] = current_Player.token
                 playBoard.check_win()       
-                if playBoard.win == True:
+                if playBoard.win:
                     playBoard.print_board()
                     playBoard.clear_board()
                     print('{} wins!').format(current_Player.name)
                     break
                 playBoard.check_draw()
-                if playBoard.draw == True:
-                    break 
+                if playBoard.draw:
+                    playBoard.clear_board()
+                    break
+                
 
-                #Swap current_Player if game hasn't ended                               
-                elif current_Player == player1:
+                #Swap current_Player if game hasn't ended, don't change this, it lets P1 and P2 swap after every game                            
+                elif player1.turn:
                     player1.turn = False
                     player2.turn = True
                 else:
@@ -109,7 +111,7 @@ class Board(object):
             if self.aRow[0][i]!= ' ' and self.aRow[0][i] == self.aRow[1][i] and self.aRow[0][i] == self.aRow[2][i]:
                 self.win = True
 
-        #Manual checks for vertical wins|Top Left to Bottom Right, Top Right to Bottom Left|
+        #Checks for vertical wins
         if self.aRow[0][0]!=' ' and self.aRow[0][0] == self.aRow[1][1] and self.aRow[0][0] == self.aRow[2][2]:
             self.win = True
             
@@ -123,9 +125,9 @@ class Board(object):
         bot_row = ' ' not in self.aRow[2]
         self.draw = top_row and mid_row and bot_row
         if self.draw:
+            self.draw = True
             print("It's a tie.")
-            self.clear_board()
-    
+
     def clear_board(self):
         #Basically reinitializes the board
         self.tRow = [' ',' ',' ']
